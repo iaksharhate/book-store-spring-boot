@@ -5,4 +5,6 @@ import com.bookstore.model.Book;
 
 public interface IBookService {
     MasterResponse addBook(Book book);
+
+    MasterResponse getAllBooks();
 }

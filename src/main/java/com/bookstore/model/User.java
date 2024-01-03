@@ -9,16 +9,17 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Book {
+public class User {
 
     @Id
-    @Column(name = "book_Id")
+    @Column(name = "user_Id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int bookId;
-    private String bookName;
-    private String author;
-    private String description;
-    private int quantity;
-    private double price;
-    private String image;
+    private int userId;
+    private String name;
+    private String email;
+    private String password;
+    private String city;
+    private String state;
+    private String pinCode;
+    private String profile;
 }

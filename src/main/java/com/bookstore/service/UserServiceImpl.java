@@ -1,6 +1,7 @@
 package com.bookstore.service;
 
 import com.bookstore.dto.MasterResponse;
+import com.bookstore.exception.CustomException;
 import com.bookstore.model.User;
 import com.bookstore.repository.IUserRepository;
 import com.google.gson.Gson;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -22,10 +24,11 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private Gson gson;
     private final String FOLDER_PATH = "C:/Users/iaksh/Desktop/BookStore-Profile/";
+
     @Override
     public MasterResponse addUser(User user, MultipartFile profileImage) {
 
-        log.info("ADD-USER-API SERVICE REQUEST : {}", gson.toJson(user));
+        log.info("ADD-USER API SERVICE REQUEST : {}", gson.toJson(user));
 
         MasterResponse masterResponse = new MasterResponse();
 
@@ -43,7 +46,37 @@ public class UserServiceImpl implements IUserService {
             masterResponse.setPayload("Something went wrong while adding user");
         }
 
-        log.info("ADD-USER-API SERVICE RESPONSE : {}", gson.toJson(masterResponse));
+        log.info("ADD-USER API SERVICE RESPONSE : {}", gson.toJson(masterResponse));
+        return masterResponse;
+    }
+
+    @Override
+    public MasterResponse getById(int id) {
+
+        log.info("GET-USER-BY-ID API SERVICE REQUEST : {}", gson.toJson(id));
+
+        MasterResponse masterResponse = new MasterResponse();
+
+        try {
+
+            Optional<User> user = userRepository.findById(id);
+
+            if (user.isEmpty()) {
+                masterResponse.setStatus("F");
+                masterResponse.setCode("404");
+                masterResponse.setPayload("User with ID " + id + " not found!");
+            } else {
+                masterResponse.setStatus("S");
+                masterResponse.setCode("200");
+                masterResponse.setPayload(user.get());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        log.info("GET-USER-BY-ID API SERVICE RESPONSE : {}", gson.toJson(masterResponse));
+
         return masterResponse;
     }
 

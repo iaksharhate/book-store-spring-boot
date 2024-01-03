@@ -21,4 +21,9 @@ public class UserController {
                                                   @ModelAttribute User user){
         return new ResponseEntity<>(userService.addUser(user, profileImage), HttpStatus.OK);
     }
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<MasterResponse> getById(@PathVariable (value = "id") int id ){
+        return new ResponseEntity<>(userService.getById(id), HttpStatus.OK);
+    }
 }

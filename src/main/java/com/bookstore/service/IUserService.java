@@ -8,4 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface IUserService {
     MasterResponse addUser(User user, MultipartFile profileImage);
+
+    MasterResponse getById(int id);
 }

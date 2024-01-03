@@ -10,4 +10,8 @@ public interface IUserService {
     MasterResponse addUser(User user, MultipartFile profileImage);
 
     MasterResponse getById(int id);
+
+    MasterResponse updateUser(String email, User user);
+
+
 }

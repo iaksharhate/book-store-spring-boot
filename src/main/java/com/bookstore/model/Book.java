@@ -13,7 +13,7 @@ public class Book {
 
     @Id
     @Column(name = "book_Id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookId;
     private String bookName;
     private String author;

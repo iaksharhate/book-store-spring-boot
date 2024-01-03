@@ -33,8 +33,10 @@ public class UserServiceImpl implements IUserService {
         MasterResponse masterResponse = new MasterResponse();
 
         try {
-            user.setProfile(saveProfileImage(profileImage));
+            String imagePath = FOLDER_PATH + UUID.randomUUID() + "-" + profileImage.getOriginalFilename();
+            user.setProfile(imagePath);
             User savedUser = userRepository.save(user);
+            profileImage.transferTo(new File(imagePath));
             masterResponse.setStatus("S");
             masterResponse.setCode("200");
             masterResponse.setPayload(savedUser);
@@ -80,9 +82,44 @@ public class UserServiceImpl implements IUserService {
         return masterResponse;
     }
 
-    private String saveProfileImage(MultipartFile file) throws IOException {
-        String imagePath = FOLDER_PATH + UUID.randomUUID() + "-" + file.getOriginalFilename();
-        file.transferTo(new File(imagePath));
-        return imagePath;
+    @Override
+    public MasterResponse updateUser(String email, User user) {
+
+        log.info("UPDATE-USER-BY-ID API SERVICE REQUEST : {} {}", email, gson.toJson(user));
+
+        MasterResponse masterResponse = new MasterResponse();
+
+        try {
+
+            User existingUser = userRepository.getUserByEmail(email);
+
+            if (existingUser == null){
+                masterResponse.setStatus("F");
+                masterResponse.setCode("404");
+                masterResponse.setPayload("User with email " + email + " not found!");
+            } else {
+                existingUser.setName(user.getName());
+                existingUser.setEmail(user.getEmail());
+                existingUser.setPassword(user.getPassword());
+                existingUser.setCity(user.getCity());
+                existingUser.setState(user.getState());
+                existingUser.setPinCode(user.getPinCode());
+
+                User updatedUser = userRepository.save(existingUser);
+                masterResponse.setStatus("S");
+                masterResponse.setCode("200");
+                masterResponse.setPayload(updatedUser);
+            }
+        } catch (Exception exception){
+            exception.printStackTrace();
+            throw new CustomException("Something went wrong while updating user!");
+        }
+
+        log.info("UPDATE-USER-BY-ID API SERVICE RESPONSE : {}", gson.toJson(masterResponse));
+
+        return masterResponse;
     }
+
+
+
 }

@@ -14,4 +14,5 @@ public interface IUserService {
     MasterResponse updateUser(String email, User user);
 
 
+    MasterResponse updateImage(int id, MultipartFile file);
 }

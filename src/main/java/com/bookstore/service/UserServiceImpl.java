@@ -33,7 +33,7 @@ public class UserServiceImpl implements IUserService {
         MasterResponse masterResponse = new MasterResponse();
 
         try {
-            String imagePath = FOLDER_PATH + UUID.randomUUID() + "-" + profileImage.getOriginalFilename();
+            String imagePath = saveProfileImage(profileImage);
             user.setProfile(imagePath);
             User savedUser = userRepository.save(user);
             profileImage.transferTo(new File(imagePath));
@@ -120,6 +120,49 @@ public class UserServiceImpl implements IUserService {
         return masterResponse;
     }
 
+    @Override
+    public MasterResponse updateImage(int id, MultipartFile file) {
 
+        log.info("UPDATE-PROFILE-IMAGE-BY-ID API SERVICE REQUEST : {} {}", gson.toJson(id), file.getOriginalFilename());
+
+        MasterResponse masterResponse = new MasterResponse();
+
+        Optional<User> existingUser = userRepository.findById(id);
+
+        try {
+            if (existingUser.isEmpty()){
+                masterResponse.setStatus("F");
+                masterResponse.setCode("404");
+                masterResponse.setPayload("User with id " + id + " not found!");
+            } else {
+
+                File existingImage = new File(existingUser.get().getProfile());
+                if (existingImage.delete()){
+                    String imagePath = saveProfileImage(file);
+                    existingUser.get().setProfile(imagePath);
+                    User updatedUser = userRepository.save(existingUser.get());
+                    file.transferTo(new File(imagePath));
+                    masterResponse.setStatus("S");
+                    masterResponse.setCode("200");
+                    masterResponse.setPayload(updatedUser);
+                } else {
+                    masterResponse.setStatus("F");
+                    masterResponse.setCode("500");
+                    masterResponse.setPayload("Something went wrong while uploading image!");
+                }
+            }
+        } catch (Exception exception){
+            exception.printStackTrace();
+            throw new CustomException("Something went wrong while uploading image!");
+        }
+
+        log.info("UPDATE-PROFILE-IMAGE-BY-ID API SERVICE RESPONSE : {}", gson.toJson(masterResponse));
+
+        return masterResponse;
+    }
+
+    private String saveProfileImage(MultipartFile file) throws IOException {
+        return FOLDER_PATH + UUID.randomUUID() + "-" + file.getOriginalFilename();
+    }
 
 }

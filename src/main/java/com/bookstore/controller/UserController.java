@@ -35,4 +35,11 @@ public class UserController {
                                                      @RequestBody User user){
         return new ResponseEntity<>(userService.updateUser(email, user), HttpStatus.OK);
     }
+
+    // Update profile pic by ID
+    @PatchMapping("/updateProfilePic/{id}")
+    public ResponseEntity<MasterResponse> updateProfilePic(@PathVariable (value = "id") int id,
+                                                           @RequestParam ("profileImage") MultipartFile file){
+        return new ResponseEntity<>(userService.updateImage(id, file), HttpStatus.OK);
+    }
 }

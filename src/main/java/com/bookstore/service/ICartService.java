@@ -5,4 +5,6 @@ import com.bookstore.dto.MasterResponse;
 
 public interface ICartService {
     MasterResponse addCart(CartDto cartDto);
+
+    MasterResponse byUserId(int userId);
 }

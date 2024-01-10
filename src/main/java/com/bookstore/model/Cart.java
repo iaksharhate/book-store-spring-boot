@@ -12,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 public class Cart {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cart_Id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_Id")
     private User user;
 
